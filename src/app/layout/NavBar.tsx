@@ -10,14 +10,14 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { useAppDispatch } from '../stores/hooks';
+import { handleFormOpen } from '../stores/activitySlice';
 
 const pages = ['Activities'];
 
-interface Props {
-  openForm : () => void
-}
+const NavBar = () => {
+  const dispatch = useAppDispatch();
 
-const NavBar = ({openForm} : Props) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -115,7 +115,7 @@ const NavBar = ({openForm} : Props) => {
               </Button>
             ))}
              <Button
-                onClick={openForm}
+                onClick={() => dispatch(handleFormOpen())}
                 sx={{ my: 2, color: 'black', display: 'block', backgroundColor: "yellow"}}>
                 Create Activity
               </Button>

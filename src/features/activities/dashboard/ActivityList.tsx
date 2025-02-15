@@ -2,29 +2,23 @@ import React, { useState } from 'react'
 import ActivityCard from './ActivityCard'
 import { Activity } from '../../../app/models/activity'
 import { Container } from '@mui/material'
+import { useAppSelector } from '../../../app/stores/hooks'
+import { RootState } from '../../../app/stores/store'
 
-interface Props {
-    activities: Activity[],
-    submitting: boolean,
-    handleSelectedActivity: (id: string) => void,
-    handleDeleteActivity: (id: string) => void
-}
 
-const ActivityList = ({activities, submitting, handleSelectedActivity, handleDeleteActivity}: Props) => {
+const ActivityList = () => {
   const [deleteActivityId, setDeleteActivityId] = useState<string>("");
   const handleActivityDeleteId = (id: string) => {
     setDeleteActivityId(id);
   }
-
+  const activityState = useAppSelector((state: RootState) => state.activity)
+  const { activities } = activityState;
   return (
     <Container>   
     {
         activities.map((activity : Activity) => (
             <ActivityCard key={activity.id} 
-                        submitting={submitting}
                         activity={activity} 
-                        handleSelectedActivity={handleSelectedActivity}
-                        handleDeleteActivity={handleDeleteActivity}
                         deleteActivityId={deleteActivityId}
                         handleActivityDeleteId={handleActivityDeleteId} />
         ))

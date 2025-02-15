@@ -1,23 +1,23 @@
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Activity } from "../../../app/models/activity";
 import Chip from "@mui/material/Chip";
+import { useAppDispatch, useAppSelector } from "../../../app/stores/hooks";
+import { handleCancelActivity, handleFormOpen } from "../../../app/stores/activitySlice";
+import { RootState } from "../../../app/stores/store";
 
-interface Props {
-  activity: Activity;
-  handleCancelActivity: () => void;
-  openForm: () => void;
-}
 
-const ActivityDetails = ({
-  activity,
-  handleCancelActivity,
-  openForm,
-}: Props) => {
+const ActivityDetails = () => {
+  const {selectedActivity : activity} = useAppSelector((state: RootState) => state.activity)
+  const dispatch = useAppDispatch();
+  
+  if(!activity)
+  {
+    return <></>
+  }
+
   return (
     <Card sx={{ maxWidth: 345 }}>
       {/* <CardMedia sx={{ height: 140 }} image="img.jpg" title="green iguana" /> */}
@@ -37,11 +37,11 @@ const ActivityDetails = ({
         <Chip label={activity.category} variant="outlined" />
       </CardContent>
       <CardActions>
-        <Button variant="contained" onClick={openForm}>
+        <Button variant="contained" onClick={() => dispatch(handleFormOpen())}>
           Edit
         </Button>
         &nbsp;
-        <Button variant="outlined" onClick={handleCancelActivity}>
+        <Button variant="outlined" onClick={() => dispatch(handleCancelActivity())}>
           Cancel
         </Button>
       </CardActions>

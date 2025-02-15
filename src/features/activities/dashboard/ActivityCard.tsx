@@ -1,4 +1,3 @@
-import * as React from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -6,24 +5,26 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Activity } from "../../../app/models/activity";
 import Chip from "@mui/material/Chip";
+import { useAppDispatch, useAppSelector } from "../../../app/stores/hooks";
+import {
+  deleteActivities,
+  handleSelectedActivity,
+} from "../../../app/stores/activitySlice";
+import { RootState } from "../../../app/stores/store";
 
 interface Props {
   activity: Activity;
-  submitting: boolean;
   deleteActivityId: string;
   handleActivityDeleteId: (id: string) => void;
-  handleSelectedActivity: (id: string) => void;
-  handleDeleteActivity: (id: string) => void;
 }
 
 export default function ActivityCard({
   activity,
-  submitting,
   deleteActivityId,
   handleActivityDeleteId,
-  handleSelectedActivity,
-  handleDeleteActivity,
 }: Props) {
+  const { submitting } = useAppSelector((state: RootState) => state.activity);
+  const dispatch = useAppDispatch();
   return (
     <Card sx={{ marginBottom: 2 }}>
       {/* <CardMedia
@@ -44,11 +45,11 @@ export default function ActivityCard({
         </Typography>
         <Chip label={activity.category} variant="outlined" />
       </CardContent>
-      <CardActions sx={{ display: 'flex', justifyContent: "right"}}>
+      <CardActions sx={{ display: "flex", justifyContent: "right" }}>
         <Button
           size="small"
           variant="contained"
-          onClick={() => handleSelectedActivity(activity.id || "")}
+          onClick={() => dispatch(handleSelectedActivity(activity.id || ""))}
         >
           View
         </Button>
@@ -59,7 +60,7 @@ export default function ActivityCard({
           loading={submitting && deleteActivityId === activity.id}
           onClick={() => {
             handleActivityDeleteId(activity.id || "");
-            handleDeleteActivity(activity.id || "");
+            dispatch(deleteActivities(activity.id || ""));
           }}
         >
           Delete

@@ -8,6 +8,9 @@ import {
 } from "@mui/material";
 import { Activity } from "../../../app/models/activity";
 import { ChangeEvent, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../app/stores/hooks";
+import { createActivities, handleFormClose, updateActivities } from "../../../app/stores/activitySlice";
+import { RootState } from "../../../app/stores/store";
 
 const StyledTextField = styled(TextField)(() => ({
   marginBottom: 8,
@@ -16,33 +19,40 @@ const StyledTextField = styled(TextField)(() => ({
 
 interface Props {
   activity: Activity | undefined;
-  submitting: boolean;
-  closeForm: () => void;
-  handleEditOrCreateActivity: (activity: Activity) => void
 }
 
-const ActivityForm = ({ activity : editActivity, submitting, handleEditOrCreateActivity, closeForm }: Props) => {
-  
+const ActivityForm = ({
+  activity: editActivity,
+
+}: Props) => {
   const initialState: Activity = {
     title: "",
     date: "",
     description: "",
     category: "",
     city: "",
-    venue: ""
-  }
-
-  const [activity, setActivity] = useState<Activity>(editActivity || initialState);
+    venue: "",
+  };
+  const {submitting} = useAppSelector((state: RootState) => state.activity)
+  const dispatch = useAppDispatch();
+  const [activity, setActivity] = useState<Activity>(
+    editActivity || initialState
+  );
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = event.target;
+    const { name, value } = event.target;
     // spread operator (triple dot)
-    setActivity({...activity,  [name] : value });
-  }
+    setActivity({ ...activity, [name]: value });
+  };
 
   const handleSubmit = () => {
-    handleEditOrCreateActivity(activity);
-  }
+    if(editActivity){
+      dispatch(updateActivities(activity))
+    }else{
+      // delete activity.id;
+      dispatch(createActivities(activity))
+    }
+  };
 
   return (
     <Card sx={{ maxWidth: 345 }}>
@@ -91,10 +101,18 @@ const ActivityForm = ({ activity : editActivity, submitting, handleEditOrCreateA
           onChange={handleChange}
         />
         <Typography>
-          <Button variant="contained" loading={submitting}
-          onClick={handleSubmit}>Submit</Button>
+          <Button
+            variant="contained"
+            loading={submitting}
+            onClick={handleSubmit}
+          >
+            Submit
+          </Button>
           &nbsp;
-          <Button variant="outlined" onClick={closeForm}>
+          <Button
+            variant="outlined"
+            onClick={() => dispatch(handleFormClose())}
+          >
             Cancel
           </Button>
         </Typography>
