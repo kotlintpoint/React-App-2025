@@ -5,21 +5,32 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import { useAppDispatch, useAppSelector } from "../../../app/stores/hooks";
-import { handleCancelActivity, handleFormOpen } from "../../../app/stores/activitySlice";
+import { activityDetails } from "../../../app/stores/activitySlice";
 import { RootState } from "../../../app/stores/store";
-
+import { Link, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import LoadingIndicator from "../../../app/layout/LoadingIndicator";
 
 const ActivityDetails = () => {
-  const {selectedActivity : activity} = useAppSelector((state: RootState) => state.activity)
+  const { id } = useParams();
+  // const [activity, setActivity] = useState<Activity | null>(null);
+  const { loading, selectedActivity: activity } = useAppSelector(
+    (state: RootState) => state.activity
+  );
   const dispatch = useAppDispatch();
-  
-  if(!activity)
-  {
-    return <></>
+
+  useEffect(() => {
+    if (id && !activity) {
+      dispatch(activityDetails(id));
+    }
+  }, [id, activity]);
+
+  if (loading || !activity) {
+    return <LoadingIndicator />;
   }
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 345, margin: 2 }}>
       {/* <CardMedia sx={{ height: 140 }} image="img.jpg" title="green iguana" /> */}
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
@@ -37,11 +48,21 @@ const ActivityDetails = () => {
         <Chip label={activity.category} variant="outlined" />
       </CardContent>
       <CardActions>
-        <Button variant="contained" onClick={() => dispatch(handleFormOpen())}>
+        <Button
+          variant="contained"
+          component={Link}
+          to={`/manage-activity/${activity.id}`}
+          // onClick={() => dispatch(handleFormOpen())}
+        >
           Edit
         </Button>
         &nbsp;
-        <Button variant="outlined" onClick={() => dispatch(handleCancelActivity())}>
+        <Button
+          variant="outlined"
+          component={Link}
+          to="/activities"
+          // onClick={() => dispatch(handleCancelActivity())}
+        >
           Cancel
         </Button>
       </CardActions>

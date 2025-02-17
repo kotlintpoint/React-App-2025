@@ -11,6 +11,7 @@ import {
   handleSelectedActivity,
 } from "../../../app/stores/activitySlice";
 import { RootState } from "../../../app/stores/store";
+import { Link } from "react-router-dom";
 
 interface Props {
   activity: Activity;
@@ -47,9 +48,11 @@ export default function ActivityCard({
       </CardContent>
       <CardActions sx={{ display: "flex", justifyContent: "right" }}>
         <Button
+          component={Link}
+          to={`/activities/${activity.id}`}
           size="small"
           variant="contained"
-          onClick={() => dispatch(handleSelectedActivity(activity.id || ""))}
+          // onClick={() => dispatch(handleSelectedActivity(activity.id || ""))}
         >
           View
         </Button>

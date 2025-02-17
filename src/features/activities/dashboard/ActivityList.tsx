@@ -13,10 +13,12 @@ const ActivityList = () => {
   }
   const activityState = useAppSelector((state: RootState) => state.activity)
   const { activities } = activityState;
+  // const activitiesByDate = Array.from(activities.values()).sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+  const activitiesByDate = [...activities].sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
   return (
     <Container>   
     {
-        activities.map((activity : Activity) => (
+        activitiesByDate.map((activity : Activity) => (
             <ActivityCard key={activity.id} 
                         activity={activity} 
                         deleteActivityId={deleteActivityId}

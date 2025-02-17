@@ -7,25 +7,26 @@ import {
   Typography,
 } from "@mui/material";
 import { Activity } from "../../../app/models/activity";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/stores/hooks";
-import { createActivities, handleFormClose, updateActivities } from "../../../app/stores/activitySlice";
+import {
+  activityDetails,
+  createActivities,
+  updateActivities,
+} from "../../../app/stores/activitySlice";
 import { RootState } from "../../../app/stores/store";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import LoadingIndicator from "../../../app/layout/LoadingIndicator";
 
 const StyledTextField = styled(TextField)(() => ({
   marginBottom: 8,
   width: "100%",
 }));
 
-interface Props {
-  activity: Activity | undefined;
-}
 
-const ActivityForm = ({
-  activity: editActivity,
-
-}: Props) => {
+const ActivityForm = () => {
   const initialState: Activity = {
+    id: "",
     title: "",
     date: "",
     description: "",
@@ -33,11 +34,24 @@ const ActivityForm = ({
     city: "",
     venue: "",
   };
-  const {submitting} = useAppSelector((state: RootState) => state.activity)
-  const dispatch = useAppDispatch();
-  const [activity, setActivity] = useState<Activity>(
-    editActivity || initialState
+  const { loading, submitting, selectedActivity } = useAppSelector(
+    (state: RootState) => state.activity
   );
+  const dispatch = useAppDispatch();
+  const [activity, setActivity] = useState<Activity>(initialState);
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(id){
+      if(selectedActivity){
+        setActivity(selectedActivity);
+      }
+      else{
+        dispatch(activityDetails(id));
+      }
+    }
+  }, [id, selectedActivity]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -45,17 +59,27 @@ const ActivityForm = ({
     setActivity({ ...activity, [name]: value });
   };
 
-  const handleSubmit = () => {
-    if(editActivity){
-      dispatch(updateActivities(activity))
-    }else{
-      // delete activity.id;
-      dispatch(createActivities(activity))
+  const handleSubmit = async () => {
+    if (id) {
+      const result = await dispatch(updateActivities(activity));
+      if(result.payload){
+        navigate(`/activities/${id}`);
+      }
+    } else {
+      delete activity.id;
+      const result = await dispatch(createActivities(activity));
+      if(result.payload){
+        navigate("/activities");
+      }
     }
   };
 
+  if (loading) {
+    return <LoadingIndicator />;
+  }
+
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 345,  margin: 2 }}>
       <CardContent>
         <StyledTextField
           label="Title"
@@ -111,7 +135,9 @@ const ActivityForm = ({
           &nbsp;
           <Button
             variant="outlined"
-            onClick={() => dispatch(handleFormClose())}
+            component={Link}
+            to={id ? `/activities/${id}` : "/activities"}
+            // onClick={() => dispatch(handleFormClose())}
           >
             Cancel
           </Button>

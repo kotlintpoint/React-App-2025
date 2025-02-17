@@ -10,14 +10,20 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { useAppDispatch } from '../stores/hooks';
-import { handleFormOpen } from '../stores/activitySlice';
+import { NavLink } from 'react-router-dom';
 
-const pages = ['Activities'];
+const pages = [
+  {
+    title:'Activities',
+    to: "/activities"
+  },
+  {
+    title: 'Create Activity',
+    to: "/create-activity"
+  }
+];
 
 const NavBar = () => {
-  const dispatch = useAppDispatch();
-
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -79,8 +85,10 @@ const NavBar = () => {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                <MenuItem component={NavLink} to={page.to} key={page.title} 
+                // onClick={handleCloseNavMenu}
+                >
+                  <Typography sx={{ textAlign: 'center' }}>{page.title}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -105,20 +113,17 @@ const NavBar = () => {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            { pages.map(item => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
+              key={item.title}
+              component={NavLink}
+              to={item.to}
+              // onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              {item.title}
+            </Button>
             ))}
-             <Button
-                onClick={() => dispatch(handleFormOpen())}
-                sx={{ my: 2, color: 'black', display: 'block', backgroundColor: "yellow"}}>
-                Create Activity
-              </Button>
           </Box>
           {/* <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">

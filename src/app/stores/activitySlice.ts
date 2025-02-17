@@ -2,11 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Activity } from "../models/activity";
 import agent from "../api/agent";
 import { createAppAsyncThunk } from "./hooks";
+import { AppDispatch } from "./store";
 
 export interface ActivityState {
   loading: boolean;
   submitting: boolean;
   activities: Activity[];
+  // activities: Map<string, Activity>
   selectedActivity: Activity | undefined;
   editMode: boolean;
 }
@@ -15,6 +17,7 @@ const initialState: ActivityState = {
   loading: false,
   submitting: false,
   activities: [],
+  // activities: new Map<string, Activity>(),
   selectedActivity: undefined,
   editMode: false,
 };
@@ -47,6 +50,13 @@ export const createActivities = createAppAsyncThunk(
   }
 )
 
+export const activityDetails = createAppAsyncThunk(
+  "activities/activityDetails",
+  async (id: string) =>{
+    return await agent.Activities.details(id);
+  }
+)
+
 
 export const activitySlice = createSlice({
   name: "activity",
@@ -63,6 +73,7 @@ export const activitySlice = createSlice({
       state.selectedActivity = state.activities.find(
         (item) => item.id === action.payload
       );
+      // state.selectedActivity = state.activities.get(action.payload);
     },
     handleCancelActivity: (state) => {
         state.selectedActivity = undefined;
@@ -75,9 +86,11 @@ export const activitySlice = createSlice({
     })
     .addCase(fetchActivities.fulfilled, (state, action) => {
       state.activities = [];
+      // state.activities = new Map<string, Activity>();
       action.payload.forEach((activity) => {
         activity.date = activity.date.split("T")[0];
         state.activities.push(activity);
+        // state.activities.set(activity.id!, activity);
       });
       state.loading = false;
     })
@@ -86,6 +99,7 @@ export const activitySlice = createSlice({
     })
     .addCase(deleteActivities.fulfilled, (state, action) => {
       state.activities = [...state.activities.filter(item => item.id !== action.payload.id)];
+      // state.activities.delete(action.payload.id!);
       state.submitting = false;
     })
     .addCase(updateActivities.pending, (state) => {
@@ -95,6 +109,7 @@ export const activitySlice = createSlice({
       action.payload.date = action.payload.date.split("T")[0];
       const index = state.activities.findIndex(item => item.id === action.payload.id);
       state.activities.splice(index, 1, action.payload);
+      // state.activities.set(action.payload.id!, action.payload);
       state.selectedActivity = action.payload;
       state.editMode = false;
       state.submitting = false;
@@ -105,8 +120,17 @@ export const activitySlice = createSlice({
     .addCase(createActivities.fulfilled, (state, action) => {
       action.payload.date = action.payload.date.split("T")[0];
       state.activities = [action.payload, ...state.activities]
+      // state.activities.set(action.payload.id!, action.payload);
       state.editMode = false;
       state.submitting = false;
+    })
+    .addCase(activityDetails.pending, (state) => {
+      state.loading = true;
+    })
+    .addCase(activityDetails.fulfilled, (state, action) => {
+      action.payload.date = action.payload.date.split("T")[0];
+      state.selectedActivity = action.payload;
+      state.loading = false;
     })
   },
 });
