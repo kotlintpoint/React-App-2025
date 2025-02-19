@@ -5,11 +5,12 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import { useAppDispatch, useAppSelector } from "../../../app/stores/hooks";
-import { activityDetails } from "../../../app/stores/activitySlice";
+import { activityDetails, handleCancelActivity } from "../../../app/stores/activitySlice";
 import { RootState } from "../../../app/stores/store";
 import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import LoadingIndicator from "../../../app/layout/LoadingIndicator";
+import { format} from "date-fns";
 
 const ActivityDetails = () => {
   const { id } = useParams();
@@ -18,6 +19,12 @@ const ActivityDetails = () => {
     (state: RootState) => state.activity
   );
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(handleCancelActivity());
+    }
+  },[]);
 
   useEffect(() => {
     if (id && !activity) {
@@ -37,7 +44,7 @@ const ActivityDetails = () => {
           {activity.title}
         </Typography>
         <Typography gutterBottom variant="body2" component="div">
-          {activity.date}
+          {format(activity.date!, "dd MMM yyyy")}
         </Typography>
         <Typography gutterBottom variant="body2" component="div">
           {activity.venue}, {activity.city}

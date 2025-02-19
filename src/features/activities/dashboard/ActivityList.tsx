@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import ActivityCard from './ActivityCard'
 import { Activity } from '../../../app/models/activity'
 import { Container } from '@mui/material'

@@ -1,10 +1,12 @@
 
 import { configureStore } from '@reduxjs/toolkit'
 import activityReducer from "./activitySlice";
+import errorReducer from "./errorSlice";
 
 export const store = configureStore({
   reducer: {
-    activity: activityReducer
+    activity: activityReducer,
+    error: errorReducer
   },
 })
 

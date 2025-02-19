@@ -6,11 +6,15 @@ import { RouterProvider } from 'react-router-dom'
 import { store } from './app/stores/store.ts'
 import router from './app/router/Routes.tsx'
 import './app/layout/index.css'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+    </LocalizationProvider>
   </StrictMode>,
 )

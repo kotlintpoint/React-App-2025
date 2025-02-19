@@ -6,12 +6,10 @@ import Typography from "@mui/material/Typography";
 import { Activity } from "../../../app/models/activity";
 import Chip from "@mui/material/Chip";
 import { useAppDispatch, useAppSelector } from "../../../app/stores/hooks";
-import {
-  deleteActivities,
-  handleSelectedActivity,
-} from "../../../app/stores/activitySlice";
+import { deleteActivities } from "../../../app/stores/activitySlice";
 import { RootState } from "../../../app/stores/store";
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
 
 interface Props {
   activity: Activity;
@@ -39,7 +37,7 @@ export default function ActivityCard({
           {activity.title}
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {activity.date}
+          {format(activity.date!, "dd MMM yyyy")}
         </Typography>
         <Typography gutterBottom variant="body2" component="div">
           {activity.venue}, {activity.city}
@@ -52,7 +50,10 @@ export default function ActivityCard({
           to={`/activities/${activity.id}`}
           size="small"
           variant="contained"
-          // onClick={() => dispatch(handleSelectedActivity(activity.id || ""))}
+          // onClick={() => {
+          //   dispatch(handleSelectedActivity(activity.id || ""));
+          //   navigate(`/activities/${activity.id}`)
+          // }}
         >
           View
         </Button>

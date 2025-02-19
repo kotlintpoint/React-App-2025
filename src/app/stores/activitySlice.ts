@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Activity } from "../models/activity";
 import agent from "../api/agent";
 import { createAppAsyncThunk } from "./hooks";
-import { AppDispatch } from "./store";
 
 export interface ActivityState {
   loading: boolean;

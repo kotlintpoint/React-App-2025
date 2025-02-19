@@ -18,6 +18,10 @@ const pages = [
     to: "/activities"
   },
   {
+    title:'Test Errors',
+    to: "/test-error"
+  },
+  {
     title: 'Create Activity',
     to: "/create-activity"
   }
