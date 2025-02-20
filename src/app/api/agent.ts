@@ -5,6 +5,7 @@ import router from "../router/Routes";
 import { ErrorResponse } from "../models/error";
 import { store } from "../stores/store";
 import { setServerError } from "../stores/errorSlice";
+import { User, UserValues } from "../models/user";
 
 axios.defaults.baseURL = "https://localhost:5000/api";
 
@@ -72,8 +73,15 @@ const Activities = {
   delete: (id: string) => requests.del<Activity>(`/Activity/${id}`),
 };
 
+const Account = {
+  current: () => requests.get<User>("/account"),
+  login: (values: UserValues) => requests.post<User>("/account/login", values),
+  register: (values: UserValues) => requests.post<User>("/account/register", values)
+}
+
 const agent = {
   Activities,
+  Account
 };
 
 export default agent;

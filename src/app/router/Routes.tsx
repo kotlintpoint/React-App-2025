@@ -7,6 +7,7 @@ import ActivityDetails from "../../features/activities/details/ActivityDetails";
 import TestErrors from "../../features/errors/TestErrors";
 import NotFound from "../../features/errors/NotFound";
 import ServerErrors from "../../features/errors/ServerErrors";
+import Login from "../../features/home/Login";
 
 
 const router = createBrowserRouter([
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
             element: <Navigate replace to="/not-found" />
           }
       ]
+    },
+    {
+      path:"/login",
+      element: <Login />
     },
    
 ]);
