@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { Activity } from "../models/activity";
 import { toast } from "react-toastify";
+import { Activity } from "../models/activity";
 import router from "../router/Routes";
 import { ErrorResponse } from "../models/error";
 import { store } from "../stores/store";

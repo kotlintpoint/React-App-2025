@@ -1,15 +1,12 @@
 import Grid from "@mui/material/Grid2";
-import { Activity } from "../../../app/models/activity";
 import ActivityList from "./ActivityList";
-import ActivityDetails from "../details/ActivityDetails";
-import ActivityForm from "../forms/ActivityForm";
 import { useAppSelector } from "../../../app/stores/hooks";
 import { RootState } from "../../../app/stores/store";
 import LoadingIndicator from "../../../app/layout/LoadingIndicator";
 
 
 const ActivityDashboard = () => {
-   const {loading, selectedActivity, editMode} = useAppSelector((state: RootState) => state.activity)
+   const {loading } = useAppSelector((state: RootState) => state.activity)
  
   if(loading){
     return <LoadingIndicator />

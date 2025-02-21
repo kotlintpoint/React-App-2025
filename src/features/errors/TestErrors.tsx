@@ -4,14 +4,9 @@ import Container from "@mui/material/Container";
 import axios from "axios";
 import { useState } from "react";
 import ValidationErrors from "./ValidationErrors";
-import { useDispatch } from "react-redux";
-import { setServerError } from "../../app/stores/errorSlice";
-import { useNavigate } from "react-router-dom";
 
 const TestErrors = () => {
   const [errors, setErrors] = useState<string[]>([]);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const baseUrl = "https://localhost:5000/api/";
 

@@ -23,7 +23,8 @@ const Register = () => {
     email: Yup.string().required("Required"),
     password: Yup.string().required("Required"),
     displayName: Yup.string().required("Required"),
-    userName: Yup.string().required("Required")
+    userName: Yup.string().required("Required"),
+    bio: Yup.string().required("Required"),
   });
   return (
     <Container style={{ minHeight: "100vh" }}>

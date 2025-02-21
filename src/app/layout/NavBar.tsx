@@ -137,6 +137,7 @@ const NavBar = () => {
               {item.title}
             </Button>
             ))}
+            <Typography sx={{ flexGrow: 1 }}></Typography>
             <Button sx={{ my: 2, color: 'white', display: 'block' }}
             onClick={
              handleLogout
