@@ -10,7 +10,9 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../stores/hooks';
+import { logout } from '../stores/userSlice';
 
 const pages = [
   {
@@ -29,6 +31,8 @@ const pages = [
 
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -37,6 +41,11 @@ const NavBar = () => {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  }
 
   return (
     <AppBar position="static">
@@ -128,6 +137,12 @@ const NavBar = () => {
               {item.title}
             </Button>
             ))}
+            <Button sx={{ my: 2, color: 'white', display: 'block' }}
+            onClick={
+             handleLogout
+            }>
+              Logout
+            </Button>
           </Box>
           {/* <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">

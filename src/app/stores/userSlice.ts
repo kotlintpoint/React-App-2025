@@ -5,21 +5,34 @@ import agent from "../api/agent";
 
 export interface UserState {
   loading: boolean,
-  user: User | null
+  user: User | null,
+  errors: string[];
 }
 
 const initialState: UserState = {
   loading: false,
-  user: null
+  user: JSON.parse(localStorage.getItem("user")!),
+  errors: []
 };
 
 export const userLogin = createAppAsyncThunk(
   "user/login",
-  async (userValues: UserValues) =>{
+  async (userValues: UserValues, thunkApi) =>{
     try{
       return await agent.Account.login(userValues);
     }catch(error){
-      throw new Error(error as string);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+)
+
+export const userRegister = createAppAsyncThunk(
+  "user/register",
+  async (userValues: UserValues, thunkApi) =>{
+    try{
+      return await agent.Account.register(userValues);
+    }catch(error){
+      return thunkApi.rejectWithValue(error);
     }
   }
 )
@@ -28,7 +41,10 @@ export const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-      
+      logout: (state) => {
+        localStorage.clear();
+        state.user = null;
+      }
     },
     extraReducers: (builder) => {
       builder.addCase(userLogin.pending, (state) => {
@@ -36,10 +52,25 @@ export const userSlice = createSlice({
       }).addCase(userLogin.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload!
+        localStorage.setItem("jwt",action.payload!.token);
+        localStorage.setItem("user",JSON.stringify(action.payload!));
       })
+      builder.addCase(userRegister.pending, (state) => {
+        state.loading = true;
+        state.errors = [];
+      }).addCase(userRegister.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload!
+        localStorage.setItem("jwt",action.payload!.token);
+        localStorage.setItem("user",JSON.stringify(action.payload!));
+      })
+      // .addCase(userRegister.rejected, (state, action: PayloadAction<string[]>) => {
+      //   state.loading = false;
+      //   state.errors = action.payload;
+      // })
     }
 });
 
-export const {  } = userSlice.actions;
+export const { logout } = userSlice.actions;
 
 export default userSlice.reducer;

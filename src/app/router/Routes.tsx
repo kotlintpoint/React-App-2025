@@ -8,12 +8,14 @@ import TestErrors from "../../features/errors/TestErrors";
 import NotFound from "../../features/errors/NotFound";
 import ServerErrors from "../../features/errors/ServerErrors";
 import Login from "../../features/home/Login";
+import Register from "../../features/home/Register";
+import RequireAuth from "../common/RequireAuth";
 
 
 const router = createBrowserRouter([
     {
       path: "/",
-      element: <App />,
+      element: <RequireAuth><App /></RequireAuth>,
       children: [
         {
             path: "",
@@ -57,6 +59,10 @@ const router = createBrowserRouter([
     {
       path:"/login",
       element: <Login />
+    },
+    {
+      path:"/register",
+      element: <Register />
     },
    
 ]);

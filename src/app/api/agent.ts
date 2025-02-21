@@ -18,6 +18,14 @@ const sleep = (delay: number) => {
   });
 };
 
+axios.interceptors.request.use((config)=>{
+  const token = store.getState().user.user?.token;
+  if(token){
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config;
+})
+
 axios.interceptors.response.use(
   async (response) => {
     await sleep(1000);
@@ -29,11 +37,11 @@ axios.interceptors.response.use(
     switch (status) {
       case 400:
         const modalErrors = [];
-        for (const key in data.errors) {
-          modalErrors.push(data.errors[key]);
+        for (const value of data as unknown as {description:string}[]) {
+          modalErrors.push(value.description);
         }
         toast.error(title);
-        throw modalErrors.flat();
+        throw modalErrors;
       case 401:
         toast.error(title);
         break;

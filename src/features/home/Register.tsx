@@ -1,12 +1,13 @@
 import { useState } from "react";
 import * as Yup from "yup";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button, Container, Typography } from "@mui/material";
 import { Form, Formik } from "formik";
+import { Link, useNavigate } from "react-router-dom";
 
 import MyTextInput from "../../app/common/form/MyTextInput";
 import { useAppDispatch } from "../../app/stores/hooks";
-import { userLogin } from "../../app/stores/userSlice";
+import { userRegister } from "../../app/stores/userSlice";
+
 
 interface Response {
   error : {
@@ -14,36 +15,35 @@ interface Response {
   }
 }
 
-const Login = () => {
+const Register = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [error, setError] = useState("");
-  const location = useLocation();
-  let from = location.state?.from?.pathname || "/activities";
- 
+  const [errors, setError] = useState([]);
   const validationSchema = Yup.object({
     email: Yup.string().required("Required"),
     password: Yup.string().required("Required"),
+    displayName: Yup.string().required("Required"),
+    userName: Yup.string().required("Required")
   });
   return (
-    <Container style={{ minHeight: "100vh", maxWidth: 345 }}>
+    <Container style={{ minHeight: "100vh" }}>
       <Typography variant="h5" color="primary">
-        Login Form
+        Registration Form
       </Typography>
 
       <Formik
         enableReinitialize
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ email: "", password: "", displayName: "", userName: "", bio: "" }}
         validationSchema={validationSchema}
         onSubmit={async (values) => {
-          setError("");
-          dispatch(userLogin(values)).then((result) => {
+          setError([]);
+          dispatch(userRegister(values)).then((result) => {
             const response = result as Response;
-            if (response?.error?.message === "Rejected") {
-              setError("Email or Password Invalid.");
+            if(response.error.message === "Rejected"){
+              setError(result.payload as []);  
             }
             else if (result.payload) {
-              navigate(from,  { replace: true });
+              navigate("/activities");
             }
           });
         }}
@@ -52,8 +52,13 @@ const Login = () => {
           <Form onSubmit={handleSubmit}>
             <MyTextInput name="email" label="Email" />
             <MyTextInput name="password" label="Password" type="password" />
-            {error && (
-              <Typography color="error">{error}</Typography>
+            <MyTextInput name="userName" label="User Name" />
+            <MyTextInput name="displayName" label="Display Name" />
+            <MyTextInput name="bio" label="Bio" multiline rows={3} />
+            {errors && (
+              errors.map((error: string) => (
+                <Typography key={error} color="error">{error}</Typography>
+              ))
             )}
             <Typography>
               <Button
@@ -64,8 +69,8 @@ const Login = () => {
                 Submit
               </Button>
               &nbsp;
-              <Button variant="outlined" component={Link} to={"/register"}>
-                Sign Up
+              <Button variant="outlined" component={Link} to={"/login"}>
+                Sign In
               </Button>
             </Typography>
           </Form>
@@ -75,4 +80,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

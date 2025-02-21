@@ -10,4 +10,5 @@ export interface UserValues {
     password: string
     displayName?: string
     userName?: string
+    bio?: string
 }
